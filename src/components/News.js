@@ -75,7 +75,7 @@ export class News extends Component {
 
   fetchMoreData = async () => {
     const nextPage = this.state.page + 1;
-    const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=b95372f69cd142e9b526977f1b97f7f4&page=${nextPage}&pageSize=${this.props.pageSize}`;
+    const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${nextPage}&pageSize=${this.props.pageSize}`;
     
   this.setState({ loading: true });
     let data = await fetch(url);
@@ -109,25 +109,28 @@ export class News extends Component {
         >
           <div className="container">
             <div className="row ">
-              {this.state.articles.map((element) => {
-                return (
-                  <div className="col-md-4" key={element.url}>
-                    <Newsitems
-                      title={element.title}
-                      description={element.description}
-                      imageUrl={
-                        element.urlToImage
-                          ? element.urlToImage
-                          : "https://www.aljazeera.com/wp-content/uploads/2025/07/13207443-1753078512.jpg?resize=1200%2C675"
-                      }
-                      author={element.author}
-                      date={element.publishedAt}
-                      source={element.source.name}
-                      newsurl={element.url}
-                    />
-                  </div>
-                );
-              })}
+{this.state.articles.map((element, index) => {
+  if (!element || !element.title || !element.url) return null;
+
+  return (
+    <div className="col-md-4" key={element.url || index}>
+      <Newsitems
+        title={element.title}
+        description={element.description}
+        imageUrl={
+          element.urlToImage
+            ? element.urlToImage
+            : "https://www.aljazeera.com/wp-content/uploads/2025/07/13207443-1753078512.jpg?resize=1200%2C675"
+        }
+        author={element.author || "Unknown"}
+        date={element.publishedAt || "Unknown"}
+        source={element.source?.name || "Unknown"}
+        newsurl={element.url}
+      />
+    </div>
+  );
+})}
+
             </div>
           </div>
         </InfiniteScroll>
